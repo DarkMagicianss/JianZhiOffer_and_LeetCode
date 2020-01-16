@@ -1,0 +1,61 @@
+LeetCode18
+给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在四个元素 a，b，c 和 d ，使得 a + b + c + d 的值与 target 相等？找出所有满足条件且不重复的四元组。
+
+注意：
+
+答案中不可以包含重复的四元组。
+
+示例：
+
+给定数组 nums = [1, 0, -1, 0, -2, 2]，和 target = 0。
+
+满足要求的四元组集合为：
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+
+两次循环加双指针 比之前的好一点点！！！！！！！！！
+
+
+四数之和 是真没意思。。。
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if(nums == null || nums.length < 4)return result;
+        Arrays.sort(nums);
+        Set<Integer> set1 = new HashSet<Integer>();
+        for (int i = 0; i < nums.length; i++) {
+            int target_1 = target - nums[i];
+            if (set1.contains(target_1))
+                continue;
+            else
+                set1.add(target_1);
+            //System.out.println("目标1:"+target_1);
+            Set<Integer> set2 = new HashSet<Integer>();
+            for (int j = i + 1; j < nums.length; j++) {
+                int target_2 = target - nums[i] - nums[j];
+                //System.out.println("目标2:"+target_2);
+                if(set2.contains(target_2))continue;
+                else set2.add(target_2);
+                Set<Integer> set3 = new HashSet<Integer>();
+                for (int k = j + 1; k < nums.length; k++) {
+                    int target_3 = target - nums[i] - nums[j] - nums[k];
+                    //System.out.println("目标3:"+target_3);
+                    if(set3.contains(target_3))continue;
+                    else set3.add(target_3);
+                    int temp_result = Arrays.binarySearch(nums, (k + 1), (nums.length), target_3);
+                    //System.out.println("结果：：：：：：：：：：：：：：：："+temp_result);
+                    if (temp_result > 0 && temp_result != i && temp_result != j && temp_result != k) {
+                        List<Integer> temp = new ArrayList<Integer>();
+                        temp.add(nums[i]);
+                        temp.add(nums[j]);
+                        temp.add(nums[k]);
+                        temp.add(nums[temp_result]);
+                        result.add(temp);
+                    }
+                }
+            }
+        }
+        return result;
+    }

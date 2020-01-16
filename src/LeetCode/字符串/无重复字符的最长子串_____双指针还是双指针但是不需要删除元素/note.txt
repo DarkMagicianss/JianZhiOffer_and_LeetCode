@@ -1,0 +1,72 @@
+LeetCode3
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+
+示例 1:
+
+输入: "abcabcbb"
+输出: 3
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+1.包含！@￥#@#……@
+2.逻辑还是需要仔细分析
+3.仔细理解题目意思
+4.System.out.println会导致超时
+
+
+
+//旧方法
+    public static int lengthOfLongestSubstring(String s) {
+        int length = s.length();
+        if (s.length() == 0) return 0;
+        int[] char_add = new int[256];//建立一个数组存放所有字符对应的已有的下标index
+        for (int i = 0; i < char_add.length; i++) {//将所有下标初始化为-1
+            char_add[i] = -1;
+        }
+        int length_max = -1;
+        int length_count = 0;
+        int start_clear_index = 0;//因为重复需要清除下标的起始index
+        for (int i = 0; i < length; i++) {
+            int index = s.charAt(i);
+            //System.out.println(s.charAt(i));
+            if (char_add[index] != -1) {
+                if (length_count > length_max) {
+                    length_max = length_count;
+                }
+                //计算目前的最大长度
+                length_count = i - char_add[index];
+                int clear_end_index = i - (length_count);//因为重复需要清除下标的结束index
+                //System.out.println("start_index" + start_index);
+                //System.out.println("clear_end_index" + clear_end_index);
+                //清除下标
+                for (int j = start_clear_index; j <= clear_end_index; j++) {
+                    int clear_index = s.charAt(j);
+                    //System.out.println("clear_char" + s.charAt(j));
+                    char_add[clear_index] = -1;
+                }
+                //该当前字符对应的数组中的下标进行赋值
+                char_add[index] = i;
+                //因为重复需要清除下标的起始index
+                start_clear_index = clear_end_index + 1;
+            } else {
+                char_add[index] = i;
+                length_count++;
+                //System.out.println(length_count);
+            }
+
+        }
+        if (length_count > length_max)
+            length_max = length_count;
+        return length_max;
+    }
+

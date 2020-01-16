@@ -1,0 +1,69 @@
+LeetCode19
+给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
+
+示例：
+
+给定一个链表: 1->2->3->4->5, 和 n = 2.
+
+当删除了倒数第二个节点后，链表变为 1->2->3->5.
+说明：
+
+给定的 n 保证是有效的。
+
+进阶：
+
+你能尝试使用一趟扫描实现吗？
+
+
+这道题目需要整理一下！！！！！！！！！！！！！！！！！！！！！！！！！
+问题的关键是如何达到链表末尾的时候 确定倒数第n个节点的位置
+因为定义的链表不可以使用逆序访问的方式
+因此只能通过一次遍历的时候记录达到链表尾端的时候的倒数第n个节点的位置
+用一个长度为n的数组 不符合题意导致内存不足
+因此只记录需要用到的当前访问节点的倒数第n个节点以及所需的节点(使用count计数法)
+原来的老方法
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head.next == null) return null;
+        if(n == 0)return head;
+        ListNode first = head;
+        ListNode index = head;
+        ListNode index_n = head;
+        ListNode delete_n = null;
+        ListNode delete_n_before = null;
+        ListNode delete_n_next = null;
+        int count = 1;
+        while (index != null) {
+            //System.out.println(index.val);
+            if(n == 1 && delete_n_next == null)
+                delete_n_next = head;
+            if(count >= n-1) {
+                if(delete_n_next == null)
+                    delete_n_next = head;
+                else
+                    delete_n_next = delete_n_next.next;
+                //System.out.println("next"+delete_n_next.val);
+            }
+            if(count >= n) {
+                if(delete_n == null)
+                    delete_n = head;
+                else
+                    delete_n = delete_n.next;
+                //System.out.println("n"+delete_n.val);
+            }
+            if(count >= n+1) {
+                if(delete_n_before == null)
+                    delete_n_before = head;
+                else
+                    delete_n_before = delete_n_before.next;
+                //System.out.println("before"+delete_n_before.val);
+            }
+            index = index.next;
+            count++;
+        }
+        if (delete_n_before == null)
+            return delete_n_next;
+        else {
+            delete_n_before.next = delete_n_next;
+            return first;
+        }
+    }

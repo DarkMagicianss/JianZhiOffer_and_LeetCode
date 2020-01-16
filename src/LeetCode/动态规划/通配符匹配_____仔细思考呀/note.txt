@@ -1,0 +1,92 @@
+LeetCode44
+给定一个字符串 (s) 和一个字符模式 (p) ，实现一个支持 '?' 和 '*' 的通配符匹配。
+
+'?' 可以匹配任何单个字符。
+'*' 可以匹配任意字符串（包括空字符串）。
+两个字符串完全匹配才算匹配成功。
+
+说明:
+
+s 可能为空，且只包含从 a-z 的小写字母。
+p 可能为空，且只包含从 a-z 的小写字母，以及字符 ? 和 *。
+示例 1:
+
+输入:
+s = "aa"
+p = "a"
+输出: false
+解释: "a" 无法匹配 "aa" 整个字符串。
+示例 2:
+
+输入:
+s = "aa"
+p = "*"
+输出: true
+解释: '*' 可以匹配任意字符串。
+示例 3:
+
+输入:
+s = "cb"
+p = "?a"
+输出: false
+解释: '?' 可以匹配 'c', 但第二个 'a' 无法匹配 'b'。
+示例 4:
+
+输入:
+s = "adceb"
+p = "*a*b"
+输出: true
+解释: 第一个 '*' 可以匹配空字符串, 第二个 '*' 可以匹配字符串 "dce".
+示例 5:
+
+输入:
+s = "acdcb"
+p = "a*c?b"
+输入: false
+
+//dp好啊 dp妙啊 dp美滋滋啊
+
+
+//该方法应该能算出正确结果 不过就是超时了。。。很尴尬
+    public boolean isMatch(String s, String p) {
+        //判断两者其中为""的所用情况
+        if (s.equals(p)) return true;
+        if (p.equals("")) return false;
+        if(s.equals("")){
+            int index = 0;
+            while (index < p.length() && p.charAt(index) == '*'){
+                index++;
+            }
+            if(index == p.length())return true;
+            else return false;
+        }
+        return sub_isMatch(s, p, 0, 0);
+    }
+
+    public boolean sub_isMatch(String s, String p, int left, int right) {
+        if (left == s.length() && right == p.length()) return true;
+        if (left >= s.length() && !s.equals("") && p.charAt(right) != '*') return false;
+        if (right >= p.length()) return false;
+        int l_index = left;
+        int r_index = right;
+        if (p.charAt(r_index) == '*') {
+            //System.out.println(r_index);
+            int temp_rin = r_index + 1;
+            while (temp_rin < p.length() && p.charAt(temp_rin) == '*') {
+                temp_rin++;
+            }
+            if (temp_rin == p.length()) return true;//后续全是* 则匹配
+            int temp_lin = l_index;
+            while (temp_lin < s.length() && s.charAt(temp_lin) != p.charAt(temp_rin) && p.charAt(temp_rin) != '?') {
+                temp_lin++;
+            }
+            if (temp_lin == s.length()) return false;//没找到p中的非'*'字段 返回false
+            return sub_isMatch(s, p, temp_lin + 1, temp_rin) || //第一种*和对应的第一个字符以及之前的字符匹配了
+                    sub_isMatch(s, p, temp_lin, temp_rin) || //第一种*和第一个字符之前的字符匹配了
+                    sub_isMatch(s, p, temp_lin + 1, temp_rin - 1);//第一种*和对应的第一个字符以及未知个字符匹配了
+        } else if (s.charAt(l_index) == p.charAt(r_index) || p.charAt(r_index) == '?') {
+            return sub_isMatch(s, p, left + 1, right + 1);
+        } else {
+            return false;
+        }
+    }

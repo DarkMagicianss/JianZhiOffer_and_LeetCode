@@ -1,0 +1,78 @@
+LeetCode22
+给出 n 代表生成括号的对数，请你写出一个函数，使其能够生成所有可能的并且有效的括号组合。
+
+例如，给出 n = 3，生成结果为：
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+//使用递归生成括号(回溯法的一种) 使用剩余的左右括号个数判断是否合法
+    List<String> result = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        if (n == 0) return result;
+        generate("", 0, 2 * n, n, n);
+        return result;
+    }
+
+    public void generate(String now, int index, int len, int left_re, int right_re) {
+        if (left_re > right_re) return;
+        if (index == len) {
+            result.add(now);
+            return;
+        }
+        if (left_re > 0) generate(now + "(", index + 1, len, left_re - 1, right_re);
+        if (right_re > 0) generate(now + ")", index + 1, len, left_re, right_re - 1);
+    }
+
+//旧的插入括号的方法 以及使用HashSet来去重的方法！！！
+每次都将上一次的记录 所有结果记录下来 直到n为止
+这样每次都可以在上次一的记录上进行添加
+将其分为基础的部分和插入部分
+基础部分的小括号若对数为2则任意排序
+插入部分的小括号则按照基础部分的所有空格进行插入
+通过hashset来排除重复
+    public List<String> generateParenthesis(int n) {
+        List<List<String>> all_list = new ArrayList<List<String>>();
+        List<String> temp_list = new ArrayList<String>();
+        temp_list.add("()");
+        all_list.add(temp_list);
+        int index = 1;
+        while (index < n) {
+            //已有index个括号
+            //target index+1个括号
+            //System.out.println("目标第" + (index + 1) + "代啊。。。。。。。。。。。。。。。。。。。");
+            //List<String> new_list = new ArrayList<String>();
+            Set<String> new_set = new HashSet<String>();
+            for (int i = 1; i <= index + 1 - 1; i++) {
+                StringBuffer right = new StringBuffer();
+                List<String> base_list = all_list.get(i - 1);
+                for (int l = 0; l < base_list.size(); l++) {
+                    right.append(base_list.get(l));
+                    //System.out.println("base:" + right.toString());
+                    List<String> old_list = all_list.get(index - i);
+                    for (int k = 0; k < old_list.size(); k++) {
+                        for (int j = 0; j <= 2 * i; j++) {
+                            //System.out.println("old:" + old_list.get(k));
+                            right.insert(j, old_list.get(k));
+                            //System.out.println("new:" + right.toString());
+                            new_set.add(right.toString());
+                            right.delete(j, j + old_list.get(k).length());
+                        }
+                    }
+                    right.delete(0,right.length());
+                }
+            }
+            List<String> new_list = new ArrayList<String>();
+            Iterator<String> it = new_set.iterator();
+            while (it.hasNext()) {
+                new_list.add(it.next());
+            }
+            all_list.add(new_list);
+            index++;
+        }
+        return all_list.get(index - 1);
+    }

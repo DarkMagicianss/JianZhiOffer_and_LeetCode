@@ -1,0 +1,40 @@
+LeetCode24
+给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+
+示例:
+
+给定 1->2->3->4, 你应该返回 2->1->4->3.
+说明:
+
+你的算法只能使用常数的额外空间。
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+
+画一个节点图   |1|2|---->|2|3|---->|3|4|---->|4|null|会比较明朗
+    public ListNode swapPairs(ListNode head) {
+        if (head == null) return null;
+        if (head.next == null) return head;
+        ListNode first = head;
+        ListNode second = first.next;
+        ListNode last_node = first;
+        int count = 2;
+        ListNode index = second.next;
+        second.next = last_node;
+        ListNode result = second;
+        while (index != null) {
+            count++;//从第三个开始
+            if (count % 2 == 0) {
+                second = index;
+                first.next = index;
+                first = last_node;
+                index = index.next;
+                second.next = last_node;
+            } else {
+                last_node = index;
+                index = index.next;
+            }
+        }
+        if (count % 2 == 1) first.next = last_node;
+        else last_node.next = index;
+        return result;
+    }

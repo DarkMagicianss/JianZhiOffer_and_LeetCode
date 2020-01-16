@@ -1,0 +1,63 @@
+LeetCode20
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+注意空字符串可被认为是有效字符串。
+
+示例 1:
+
+输入: "()"
+输出: true
+示例 2:
+
+输入: "()[]{}"
+输出: true
+示例 3:
+
+输入: "(]"
+输出: false
+示例 4:
+
+输入: "([)]"
+输出: false
+示例 5:
+
+输入: "{[]}"
+输出: true
+
+
+对于括号最好使用栈的概念后进后出
+栈的话 普通的ArrayList就可以实现
+
+    public boolean isValid(String s) {
+        if (s == "") return true;
+        List my_list = new ArrayList<Character>();
+        byte[] strs = s.getBytes();
+        int length = strs.length;
+        for (int i = 0; i < length; i++) {//记录并检查
+            if (strs[i] == '(' || strs[i] == '[' || strs[i] == '{') {
+                my_list.add(strs[i]);
+                //System.out.println("left:" + (char) strs[i]);
+            } else {
+                int temp_length = my_list.size();
+                if (temp_length == 0) return false;
+                byte last_char = (byte) my_list.get(my_list.size() - 1);
+                //System.out.println("length:" + temp_length);
+                if ((last_char == '(' && strs[i] == ')') ||
+                        (last_char == '[' && strs[i] == ']') ||
+                        (last_char == '{' && strs[i] == '}')) {
+                    my_list.remove(temp_length - 1);
+                } else {
+                    //System.out.println("last:" + (char) last_char);
+                    //System.out.println("right:" + (char) strs[i]);
+                    return false;
+                }
+            }
+        }
+        //检查
+        if (my_list.size() > 0) return false;
+        return true;
+    }

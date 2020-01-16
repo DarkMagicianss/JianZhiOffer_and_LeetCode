@@ -1,0 +1,79 @@
+LeetCode29
+给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。
+
+返回被除数 dividend 除以除数 divisor 得到的商。
+
+示例 1:
+
+输入: dividend = 10, divisor = 3
+输出: 3
+示例 2:
+
+输入: dividend = 7, divisor = -3
+输出: -2
+说明:
+
+被除数和除数均为 32 位有符号整数。
+除数不为 0。
+假设我们的环境只能存储 32 位有符号整数，其数值范围是 [−231,  231 − 1]。本题中，如果除法结果溢出，则返回 231 − 1。
+
+
+一开始的思路错了 不应该通过整个被除数通过减法来获得答案(这样可能会超时) 应该通过每个位进行操作
+终于通过了 简直了 问题就应该考虑极端情况 比如这里的负的2的31次方的计算量的问题 还有不能使用乘除mod方式的替换问题
+以及各种为了避免复杂计算的条件判断问题
+    public int divide(int dividend, int divisor) {
+        int[] result_num = new int[12];
+        int start_index = -1;
+        Integer bei_d = dividend;
+        byte[] numbers = bei_d.toString().getBytes();
+        int next_bei = 0;
+        int fu_flag = 0;
+        if (dividend == 0) return 0;
+        if (divisor == 1) return dividend;
+        if(dividend == Integer.MIN_VALUE && divisor == -1)return Integer.MAX_VALUE;
+        if (dividend == divisor) return 1;
+        if (dividend == -divisor) return -1;
+        if (divisor == Integer.MIN_VALUE) {
+            return 0;//被除数和除数相等的情况已经在前面排除了
+        }
+        if (numbers[0] == '-') {//得到结果的正负号
+            fu_flag = 1;
+            result_num[0] = 0;
+        }
+        if (divisor < 0 && fu_flag == 1) {//将除数转换为正数
+            fu_flag = 0;
+            divisor = -divisor;
+        } else if (divisor < 0) {
+            fu_flag = 1;
+            divisor = -divisor;
+        }
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == '-') continue;
+            //System.out.println("index:" + i);
+            result_num[i] = 0;
+            long now_num = 0;
+            for (int j = 0; j < 10; j++) {//将上一位的余数放大10倍
+                now_num += next_bei;
+            }
+            now_num += (numbers[i] - '0');
+            while (now_num >= divisor) {
+                //System.out.println(now_num);
+                now_num -= divisor;
+                result_num[i]++;
+                if (start_index == -1) start_index = i;
+            }
+            next_bei = (int) now_num;
+        }
+        long result = 0;
+        for (int i = start_index;start_index!= -1 && i < numbers.length ; i++) {
+            //System.out.println("result_index:" + result_num[i]);
+            long temp = result;
+            for (int j = 0; j < 9; j++) {
+                result += temp;
+            }
+            result += result_num[i];
+            //System.out.println("result" + result);
+        }
+        if (fu_flag == 1) return (int) (result - result - result);
+        else return (int) result;
+    }

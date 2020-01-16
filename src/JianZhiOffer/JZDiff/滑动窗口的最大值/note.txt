@@ -1,0 +1,65 @@
+时间限制：1秒 空间限制：32768K 热度指数：171010
+ 算法知识视频讲解
+题目描述
+给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。
+例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}；
+针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个：
+{[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+时间复杂度较高的算法
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (num == null || num.length == 0 || size == 0) return result;
+        int max_index = 0;
+        int left_index = 0;
+        int right_index = left_index + size;
+        for (; right_index <= num.length; left_index++, right_index++) {
+            max_index = left_index;
+            for (int i = left_index; i < right_index; i++) {
+                if (num[i] > num[max_index]) {
+                    max_index = i;
+                }
+            }
+            result.add(num[max_index]);
+        }
+        return result;
+    }

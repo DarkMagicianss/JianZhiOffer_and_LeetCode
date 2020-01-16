@@ -1,0 +1,75 @@
+LeetCode84
+给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+
+求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+ 
+以上是柱状图的示例，其中每个柱子的宽度为 1，给定的高度为 [2,1,5,6,2,3]。
+
+
+图中阴影部分为所能勾勒出的最大矩形面积，其面积为 10 个单位。
+5,6对应拼成的5*2的矩阵
+ 
+
+示例:
+
+输入: [2,1,5,6,2,3]
+输出: 10
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/largest-rectangle-in-histogram
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+//分治办法 暴力1号
+    public int largestRectangleArea(int[] heights) {
+        if(heights.length == 0)return 0;
+        if(heights.length == 1)return heights[0];
+        return sub_largestRectangleArea(heights, 0, heights.length - 1);
+    }
+
+    public int sub_largestRectangleArea(int[] heights, int start, int end) {
+        if (start == end) return heights[start];
+        int min_value = Integer.MAX_VALUE;
+        int min_index = -1;
+        for (int i = start; i <= end; i++) {
+            if (heights[i] < min_value) {
+                min_value = heights[i];
+                min_index = i;
+            }
+        }
+        int result = min_value * (end - start + 1);
+        if (min_index > start)
+            result = Math.max(result, sub_largestRectangleArea(heights, start, min_index - 1));
+        if (min_index < end)
+            result = Math.max(result, sub_largestRectangleArea(heights, min_index + 1, end));
+        return result;
+    }
+
+//最小高度的 暴力2号
+    public int largestRectangleArea(int[] heights) {
+        if (heights.length == 0) return 0;
+        if (heights.length == 1) return heights[0];
+        int len = heights.length;
+        int[] less = new int[len];
+        int temp_max = 0;
+        for (int i = 0; i < len; i++) {
+            less[i] = heights[i];
+            int t_max = less[i];
+            if (less[i] == less[heights.length - 1]) {
+                temp_max = Math.max(t_max, temp_max);
+                continue;
+            }
+            for (int j = i + 1; j < len; j++) {
+                less[j] = Math.min(less[j - 1], heights[j]);
+                if (less[j] != 0 && less[j] == less[heights.length - 1]) {
+                    break;
+                }
+                t_max = Math.max(t_max, less[j] * (j - i + 1));
+                //System.out.println("     " + less[j]);
+            }
+            t_max = Math.max(t_max, less[len - 1] * (len - 1 - i + 1));
+            //System.out.println(t_max);
+            temp_max = Math.max(t_max, temp_max);
+        }
+        return temp_max;
+    }

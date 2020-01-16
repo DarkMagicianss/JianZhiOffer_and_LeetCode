@@ -1,0 +1,54 @@
+LeetCode120
+给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+
+例如，给定三角形：
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+
+说明：
+
+如果你可以只使用 O(n) 的额外空间（n 为三角形的总行数）来解决这个问题，那么你的算法会很加分。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/triangle
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+//自己写的菜鸡方法
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int level = triangle.size();
+        if (level == 0) return 0;
+        ArrayList<Integer> list = new ArrayList<>(level);
+        list.add(triangle.get(0).get(0));
+        if (level == 1) return list.get(0);
+        int step = 2;
+        int min = Integer.MAX_VALUE;
+        while (step <= level) {
+            List<Integer> temp = triangle.get(step - 1);
+            //System.out.println((step - 1) + "   " + temp.size());
+            //先添加last
+            int last = list.get(step - 2) + temp.get(step - 1);
+            if (step == level) min = Math.min(last, min);
+            //System.out.println("last: " + last);
+            list.add(last);
+            //再操作中间数
+            for (int i = temp.size() - 2; i >= 1; i--) {
+                int temp_val = Math.min(temp.get(i) + list.get(i - 1), temp.get(i) + list.get(i));
+                list.set(i, temp_val);
+                //System.out.println("mid: " + temp_val);
+                if (step == level) min = Math.min(temp_val, min);
+            }
+            //再操作first
+            int first = list.get(0) + temp.get(0);
+            if (step == level) min = Math.min(first, min);
+            //System.out.println("first: " + first);
+            list.set(0, first);
+            step++;
+        }
+        return min;
+    }

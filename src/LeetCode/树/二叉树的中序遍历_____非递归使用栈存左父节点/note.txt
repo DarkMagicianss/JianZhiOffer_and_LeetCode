@@ -1,0 +1,40 @@
+LeetCode94
+给定一个二叉树，返回它的中序 遍历。
+
+示例:
+
+输入: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+
+输出: [1,3,2]
+进阶: 递归算法很简单，你可以通过迭代算法完成吗？
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/binary-tree-inorder-traversal
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+    //使用类似栈的方式实现了 非递归的中序遍历方式
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> result = new LinkedList<>();
+        if (root == null) return result;
+        //LinkedList记录父节点
+        LinkedList<TreeNode> last_list = new LinkedList<>();
+        TreeNode step = root;
+        while (step != null || !last_list.isEmpty()) {
+            if (step != null) {
+                //恢复只恢复上一个左父节点
+                last_list.addFirst(step);
+                step = step.left;
+            }else{
+                step = last_list.removeFirst();
+                result.add(step.val);
+                //若右节点不为空 则继续判断右节点这个子树的中序遍历 感觉像就变成递归了
+                step = step.right;
+            }
+        }
+        return result;
+    }

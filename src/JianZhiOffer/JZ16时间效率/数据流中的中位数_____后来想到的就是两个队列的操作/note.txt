@@ -1,0 +1,82 @@
+时间限制：1秒 空间限制：32768K 热度指数：133805
+ 算法知识视频讲解
+题目描述
+如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。
+如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取数据的中位数。
+
+
+思路：创建优先级队列维护大顶堆和小顶堆两个堆，并且小顶堆的值都大于大顶堆的值，2个堆个数的差值小于等于1，
+所以当插入个数为奇数时：大顶堆个数就比小顶堆多1，中位数就是大顶堆堆头；
+当插入个数为偶数时，使大顶堆个数跟小顶堆个数一样，中位数就是 2个堆堆头平均数。
+也可使用集合类的排序方法。
+
+
+
+太菜的老方法 不必讨论了
+    private class ListNode2 {
+        public int val;
+        public ListNode2 next;
+        public ListNode2 pre;
+        public ListNode2(int x) {
+            val = x;
+        }
+    }
+    ListNode2 head;
+    ListNode2 tail;
+    ListNode2 mid = null;
+    double last_mid = 0;
+    int len = 0;
+    public void Insert(Integer num) {
+        ListNode2 temp = new ListNode2(num);
+        len++;
+        if (len == 1) {
+            head = temp;
+            tail = temp;
+            mid = temp;
+            last_mid = temp.val;
+            return;
+        }
+        if (num < head.val) {
+            head.pre = temp;
+            temp.next = head;
+            head = temp;
+        } else if (num >= tail.val) {
+            tail.next = temp;
+            temp.pre = tail;
+            tail = temp;
+        } else {
+            ListNode2 step = head;
+            while (step != null) {
+                ListNode2 next = step.next;
+                if (num >= step.val && num < next.val) {
+                    step.next = temp;
+                    temp.pre = step;
+                    next.pre = temp;
+                    temp.next = next;
+                    break;
+                } else {
+                    step = next;
+                }
+            }
+        }
+        if (num > mid.val) {
+            if (len % 2 == 0) {//大小为偶数 让mid节点停在中间靠左位置
+                last_mid = (mid.val + mid.next.val) * 1.0 / 2;
+            } else {//大小为奇数
+                mid = mid.next;
+                last_mid = mid.val;
+            }
+        } else {
+            if (len % 2 == 0) {//大小为偶数 让mid节点停在中间靠左位置
+                last_mid = (mid.val + mid.pre.val) * 1.0 / 2;
+                mid = mid.pre;
+            } else {//大小为奇数
+                last_mid = mid.val;
+            }
+        }
+    }
+
+    public Double GetMedian() {
+        return last_mid;
+    }

@@ -1,0 +1,44 @@
+LeetCode77
+给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+
+示例:
+
+输入: n = 4, k = 2
+输出:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/combinations
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+// 字典序 (二进制排序) 虽然慢了一些 但是思路不错
+        // init first combination
+        LinkedList<Integer> nums = new LinkedList<Integer>();
+        for(int i = 1; i < k + 1; ++i)
+            nums.add(i);
+        //末端设置一个哨兵
+        nums.add(n + 1);
+        List<List<Integer>> output = new ArrayList<List<Integer>>();
+        int j = 0;
+        while (j < k) {//每次计算完要改变的目标值大于等于k时表明已经结束
+            // add current combination
+            output.add(new LinkedList(nums.subList(0, k)));
+            // increase first nums[j] by one
+            // if nums[j] + 1 != nums[j + 1]
+            j = 0;
+            //当前index的值加一不等于下一个值时 说明中间有空隙 需要自增当前值
+            while ((j < k) && (nums.get(j) + 1 == nums.get(j + 1))) {
+                nums.set(j, j + 1);
+                j++;
+            }
+            nums.set(j, nums.get(j) + 1);
+            //System.out.println(nums);
+        }
+        return output;

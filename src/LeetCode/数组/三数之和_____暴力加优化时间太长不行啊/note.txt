@@ -1,0 +1,39 @@
+LeetCode15
+给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
+
+注意：答案中不可以包含重复的三元组。
+
+例如, 给定数组 nums = [-1, 0, 1, 2, -1, -4]，
+
+满足要求的三元组集合为：
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+
+//使用双指针进行查找 还是要考虑如何移动双指针！！！
+
+//直接进行查找 暴力加优化 结果不行啊
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if(nums == null || nums.length < 3)return result;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length && nums[i] <= 0; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j < nums.length && nums[j] <= (0 - nums[i]); j++) {
+                int target = 0 - nums[i] - nums[j];
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                if (target > nums[nums.length - 1] || target < nums[0]) continue;
+                int temp_result = Arrays.binarySearch(nums, (j + 1), (nums.length), target);
+                if (temp_result > 0) {
+                    List<Integer> temp = new ArrayList<Integer>();
+                    temp.add(nums[i]);
+                    temp.add(nums[j]);
+                    temp.add(nums[temp_result]);
+                    result.add(temp);
+                }
+            }
+        }
+        return result;
+    }
+

@@ -1,0 +1,54 @@
+416. 分割等和子集
+给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+
+
+
+示例 1：
+
+输入：nums = [1,5,11,5]
+输出：true
+解释：数组可以分割成 [1, 5, 5] 和 [11] 。
+示例 2：
+
+输入：nums = [1,2,3,5]
+输出：false
+解释：数组不能分割成两个元素和相等的子集。
+
+
+提示：
+
+1 <= nums.length <= 200
+1 <= nums[i] <= 100
+
+超时了，刚啊，暴力解决不了。也没想到很好的动态规划的方法。
+    public boolean canPartition(int[] nums) {
+        if (nums == null || nums.length == 1) return false;
+        if (nums.length == 2) return nums[0] == nums[1];
+        int sum = Arrays.stream(nums).sum();
+        if (sum %2 == 1) return false;
+        // 对超过3个元素的数组进行排序
+        Arrays.sort(nums);
+        //System.out.println(Arrays.toString(nums));
+        int target = sum/2;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > target/2) return false;
+            if (subCanPartition(nums, i, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean subCanPartition(int[] nums, int startIndex, int target) {
+        //System.out.println("startIndex"+startIndex+" target"+target);
+        if (nums[startIndex] == target) return true;
+        if (startIndex >= nums.length || nums[startIndex] > target/2) {
+            return false;
+        }
+        for (int i = startIndex + 1; i < nums.length; i++) {
+            if (subCanPartition(nums, i, target - nums[startIndex])){
+                return true;
+            }
+        }
+        return false;
+    }
